@@ -6,6 +6,7 @@ export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [generatedImage, setGeneratedImage] = useState("");
+  const [captions, setCaptions] = useState<string[]>([]);
 
   const handleSubmit = async () => {
     if (!prompt) return;
@@ -20,7 +21,8 @@ export default function Home() {
 
       const data = await response.json();
       const prompts = data.comics.map(comic => comic.prompt);
-      const captions = data.comics.map(comic => comic.caption);
+      const newCaptions = data.comics.map(comic => comic.caption);
+      setCaptions(newCaptions);
 
       // console.log("Generated prompts:", prompts);
       // console.log("Generated captions:", captions);
@@ -74,16 +76,25 @@ export default function Home() {
             {[1, 2, 3].map((index) => (
               <div
                 key={index}
-                className="aspect-square rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700 flex items-center justify-center bg-gray-50 dark:bg-gray-900 overflow-hidden"
+                className="flex flex-col gap-2"
               >
-                {generatedImage ? (
-                  <img
-                    src={generatedImage[index - 1]}
-                    alt={`Generated comic panel ${index}`}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <span className="text-gray-400">Image {index}</span>
+                <div
+                  className="aspect-square rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700 flex items-center justify-center bg-gray-50 dark:bg-gray-900 overflow-hidden"
+                >
+                  {generatedImage ? (
+                    <img
+                      src={generatedImage[index - 1]}
+                      alt={`Generated comic panel ${index}`}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-gray-400">Image {index}</span>
+                  )}
+                </div>
+                {captions[index - 1] && (
+                  <p className="text-sm text-center text-gray-700 dark:text-gray-300">
+                    {captions[index - 1]}
+                  </p>
                 )}
               </div>
             ))}
