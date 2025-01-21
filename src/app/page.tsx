@@ -12,23 +12,32 @@ export default function Home() {
 
     try {
       setIsLoading(true);
-      const response = await fetch("/api/generate_img", {
+      const response = await fetch("/api/generate_plot", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to generate image");
+      const data = await response.json();
+      const prompts = data.comics.map(comic => comic.prompt);
+      const captions = data.comics.map(comic => comic.caption);
+
+      // console.log("Generated prompts:", prompts);
+      // console.log("Generated captions:", captions);
+      
+      // Generate images one at a time
+      const imageUrls = [];
+      for (const prompt of prompts) {
+        const imgResponse = await fetch("/api/generate_img", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt }),
+        });
+        const imgData = await imgResponse.json();
+        imageUrls.push(imgData.imgURL);
       }
 
-      const data = await response.json();
-      let img_url = data.imgURL;
-
-      console.log("Generated image:", img_url);
-      setGeneratedImage(img_url);
+      setGeneratedImage(imageUrls);
       setShowTiles(true);
     } catch (error) {
       console.error("Error:", error);
@@ -69,7 +78,7 @@ export default function Home() {
               >
                 {generatedImage ? (
                   <img
-                    src={generatedImage}
+                    src={generatedImage[index - 1]}
                     alt={`Generated comic panel ${index}`}
                     className="w-full h-full object-cover"
                   />
