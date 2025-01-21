@@ -28,6 +28,10 @@ export async function POST(req: Request) {
       }
     );
 
+    if (!Array.isArray(output)) {
+      throw new Error("Expected array output from Replicate");
+    }
+
     return NextResponse.json({ imgURL: String(output[0]) });
 
   } catch (error) {
