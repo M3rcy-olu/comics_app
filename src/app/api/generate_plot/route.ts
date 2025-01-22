@@ -41,7 +41,10 @@ async function generateComics(userPrompt: string): Promise<ComicsResponse> {
     ]
   });
 
-  const storyJson = JSON.parse(response.choices[0].message.content) as ComicsResponse;
+  const content = response.choices[0].message.content;
+  if (!content) throw new Error("No content in response");
+
+  const storyJson = JSON.parse(content) as ComicsResponse;
   return storyJson;
 }
 

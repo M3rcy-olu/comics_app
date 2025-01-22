@@ -1,11 +1,16 @@
 "use client";
 import { useState } from "react";
 
+interface Comic {
+  prompt: string;
+  caption: string;
+}
+
 export default function Home() {
   const [showTiles, setShowTiles] = useState(false);
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [generatedImage, setGeneratedImage] = useState("");
+  const [generatedImage, setGeneratedImage] = useState<string[]>([]);
   const [captions, setCaptions] = useState<string[]>([]);
 
   const handleSubmit = async () => {
@@ -20,8 +25,8 @@ export default function Home() {
       });
 
       const data = await response.json();
-      const prompts = data.comics.map(comic => comic.prompt);
-      const newCaptions = data.comics.map(comic => comic.caption);
+      const prompts = data.comics.map((comic: Comic) => comic.prompt);
+      const newCaptions = data.comics.map((comic: Comic) => comic.caption);
       setCaptions(newCaptions);
 
       // console.log("Generated prompts:", prompts);
