@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from 'next/navigation';
 
 interface Comic {
   prompt: string;
@@ -7,6 +8,7 @@ interface Comic {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [showTiles, setShowTiles] = useState(false);
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -56,7 +58,15 @@ export default function Home() {
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center w-full max-w-4xl">
-        <h1 className="text-3xl font-bold mb-4">Comic Generator</h1>
+        <div className="w-full flex justify-between items-center">
+          <h1 className="text-3xl font-bold">Comic Generator</h1>
+          <button
+            onClick={() => router.push('/history')}
+            className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 transition-colors"
+          >
+            Comic History
+          </button>
+        </div>
 
         <div className="w-full max-w-2xl">
           <textarea
